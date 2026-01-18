@@ -1,12 +1,15 @@
 const express = require('express');
 const cors = require("cors");
 const mongoose = require('mongoose');
+const { requestLogger, errorHandler } = require('./middleware/middleware');
 const cookieParser = require('cookie-parser');
 
 const port = 5000;
 const app = express();
-app.use(cors());
+
+// Middleware
 app.use(express.json());
+app.use(requestLogger);  // Log all requests
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(cookieParser());
 
@@ -23,18 +26,10 @@ try {
 app.use('/api/ingredients', require('./routes/ingredientRoutes'));
 app.use('/api/pizzas', require("./routes/pizzaRoutes"));
 app.use('/api/cart', require('./routes/cartRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
 
-app.post('/api/signup', (req, res) => {
-    const { username, password, email, contact } = req.body;
-
-    res.send(username, password);
-});
-
-
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-
-});
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 app.listen(port, "0.0.0.0", () => {
     console.log(`!Port is running on ${port}!`)
