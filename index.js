@@ -1,12 +1,14 @@
 const express = require('express');
 const cors = require("cors");
 const mongoose = require('mongoose');
-// const { default: middleware } = require('./middleware/middleware');
+const cookieParser = require('cookie-parser');
 
 const port = 5000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cookieParser());
 
 try {
     mongoose
